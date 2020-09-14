@@ -21,11 +21,14 @@ public class Lexis {
             } else {
                 String viraz = matcher.group(4);
                 System.out.println(viraz);
-                Pattern patternViraz = Pattern.compile("(([\\d\\w]+)([\\+\\-\\*\\/]?))+");
+                Pattern patternCheck = Pattern.compile("(([\\d\\w]+)([\\+\\-\\*\\/]?))*([\\d\\w]+;)");
+                Pattern patternViraz = Pattern.compile("([\\d\\w]+)([\\+\\-\\*\\/]?))");
                 Matcher matcherViraz = patternViraz.matcher(viraz);
-                while (matcherViraz.find()) {
-                    for (int i = 1; i < matcherViraz.groupCount(); i++) {
-                        System.out.println(matcherViraz.group(i));
+                if (patternCheck.matcher(viraz).matches()) {
+                    while (matcherViraz.find()) {
+                        for (int i = 0; i < matcherViraz.groupCount(); i++) {
+                            System.out.println(matcherViraz.group(i));
+                        }
                     }
                 }
             }

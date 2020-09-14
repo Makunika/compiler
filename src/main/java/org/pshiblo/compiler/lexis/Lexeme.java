@@ -1,5 +1,7 @@
 package org.pshiblo.compiler.lexis;
 
+import java.io.IOException;
+
 public class Lexeme {
 
     private int pointer;
@@ -37,6 +39,9 @@ public class Lexeme {
     }
 
     public int getPointer() {
+        if (isSign) {
+            throw new RuntimeException("Получаешь поинтер, а это знак? нельзя так");
+        }
         return pointer;
     }
 

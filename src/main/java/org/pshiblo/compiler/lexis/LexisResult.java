@@ -23,9 +23,11 @@ public class LexisResult {
         if (findLexeme != null) {
             lexeme.setPointer(findLexeme.getPointer());
         } else {
-            lexeme.setPointer(count);
-            tableNames.add(new RowTableName(lexeme.getLexeme(), count, about.getVal()));
-            count++;
+            if (!lexeme.isSign()) {
+                lexeme.setPointer(count);
+                tableNames.add(new RowTableName(lexeme.getLexeme(), count, about.getVal()));
+                count++;
+            }
         }
         lexemes.add(lexeme);
     }
