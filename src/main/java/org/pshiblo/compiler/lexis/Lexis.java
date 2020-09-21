@@ -17,18 +17,30 @@ public class Lexis {
         if (matcher.find()) {
             lexisResult.addNextLexeme(Lexeme.val(matcher.group(1)), About.INT);
             if (matcher.group(2).equals(";")) {
-                lexisResult.addNextLexeme(Lexeme.sign(matcher.group(2)), About.INT);
+                lexisResult.addNextLexeme(Lexeme.sign(matcher.group(2)), About.OPERATOR);
             } else {
-                String viraz = matcher.group(4);
-                System.out.println(viraz);
-                Pattern patternCheck = Pattern.compile("(([\\d\\w]+)([\\+\\-\\*\\/]?))*([\\d\\w]+;)");
-                Pattern patternViraz = Pattern.compile("([\\d\\w]+)([\\+\\-\\*\\/]?))");
-                Matcher matcherViraz = patternViraz.matcher(viraz);
-                if (patternCheck.matcher(viraz).matches()) {
-                    while (matcherViraz.find()) {
-                        for (int i = 0; i < matcherViraz.groupCount(); i++) {
-                            System.out.println(matcherViraz.group(i));
+                lexisResult.addNextLexeme(Lexeme.sign(matcher.group(3)),  About.OPERATOR);
+                Pattern p = Pattern.compile("([A-Za-z]+\\w*)|(\\d+\\.?\\d*)|([+\\-*/^])|[()]|;");
+                Matcher m = p.matcher(matcher.group(4));
+                while (m.find())
+                {
+                    String str = m.group();
+                    if (str.matches("\\d+\\.?\\d*")) {
+                        if (str.contains(".")) {
+                            lexisResult.addNextLexeme(Lexeme.number(str), About.CONST_FLOAT);
+                            lexisResult.getTableNames().get(0).setAbout(About.FLOAT.getVal());
+                        } else {
+                            lexisResult.addNextLexeme(Lexeme.number(str), About.CONST_INT);
                         }
+                    }
+                    else if (str.matches("[+\\-*/^]")) {
+                        lexisResult.addNextLexeme(Lexeme.sign(str), About.OPERATOR);
+                    }
+                    else if (str.matches("[();]")) {
+                        lexisResult.addNextLexeme(Lexeme.sign(str), About.BRACKET);
+                    }
+                    else if (str.matches("[A-Za-z]+\\w*")) {
+                        lexisResult.addNextLexeme(Lexeme.val(str), About.INT);
                     }
                 }
             }

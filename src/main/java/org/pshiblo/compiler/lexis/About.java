@@ -6,7 +6,9 @@ enum About {
     DOUBLE("Переменная типа double"),
     CONST_INT("Константа типа int"),
     CONST_FLOAT("Константа типа FLOAT"),
-    CONST_DOUBLE("Константа типа DOUBLE");
+    CONST_DOUBLE("Константа типа DOUBLE"),
+    OPERATOR("Оператор"),
+    BRACKET("Скобка");
 
     private final String val;
 

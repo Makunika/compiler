@@ -5,7 +5,7 @@ public class RowTableName {
 
     private final int number;
 
-    private final String about;
+    private String about;
 
     public RowTableName(String id, int number, String about) {
         this.id = id;
@@ -25,4 +25,7 @@ public class RowTableName {
         return about;
     }
 
+    public void setAbout(String about) {
+        this.about = about;
+    }
 }

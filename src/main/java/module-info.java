@@ -4,4 +4,7 @@ module org.pshiblo {
 
     opens org.pshiblo.UI to javafx.fxml;
     exports org.pshiblo.UI;
+
+    opens org.pshiblo.UI.controllers to javafx.fxml;
+    exports org.pshiblo.UI.controllers;
 }

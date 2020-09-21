@@ -8,10 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="532.0" prefWidth="772.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pshiblo.UI.controllers.PrimaryController">
    <children>
-      <TextField fx:id="textBoxInput" layoutX="212.0" layoutY="45.0" prefHeight="25.0" prefWidth="497.0" />
+      <TextField fx:id="textBoxInput" layoutX="212.0" layoutY="45.0" prefHeight="25.0" prefWidth="497.0" text="z=(x*y-1)*( x*y+1)" />
       <TextField fx:id="textBoxLexemes" editable="false" layoutX="212.0" layoutY="137.0" prefHeight="25.0" prefWidth="497.0" />
       <TableView fx:id="table" layoutX="14.0" layoutY="185.0" prefHeight="333.0" prefWidth="743.0">
         <columns>
