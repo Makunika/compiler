@@ -39,9 +39,6 @@ public class Lexeme {
     }
 
     public int getPointer() {
-        if (isSign) {
-            throw new RuntimeException("Получаешь поинтер, а это знак? нельзя так");
-        }
         return pointer;
     }
 

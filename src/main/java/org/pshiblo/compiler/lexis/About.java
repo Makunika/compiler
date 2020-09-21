@@ -8,7 +8,14 @@ enum About {
     CONST_FLOAT("Константа типа FLOAT"),
     CONST_DOUBLE("Константа типа DOUBLE"),
     OPERATOR("Оператор"),
-    BRACKET("Скобка");
+    BRACKET("Скобка ()"),
+    BRACKET_REGION("{}"),
+    END_OPERATOR(";"),
+    CONST_16("Шестнадцатиричная константа"),
+    VAL_16("Шестнадцатиричная переменная"),
+    DO("do"),
+    WHILE("while"),
+    BOOLEAN_OPERATORS("Условные операторы");
 
     private final String val;
 
