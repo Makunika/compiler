@@ -12,7 +12,7 @@ import javafx.scene.control.*;
 import org.pshiblo.compiler.lexis.Exceptions.MatcherCompileException;
 import org.pshiblo.compiler.lexis.Lexis;
 import org.pshiblo.compiler.lexis.LexisResult;
-import org.pshiblo.compiler.lexis.RowTableName;
+import org.pshiblo.compiler.lexis.LexemeHash;
 
 public class PrimaryController implements Initializable {
 
@@ -23,31 +23,25 @@ public class PrimaryController implements Initializable {
     private TextField textBoxLexemes;
 
     @FXML
-    private TableView<RowTableName> table;
+    private TableView<LexemeHash> table;
 
     @FXML
-    private TableColumn<RowTableName, String> columnNumber;
+    private TableColumn<LexemeHash, String> columnId;
 
     @FXML
-    private TableColumn<RowTableName, String> columnId;
-
-    @FXML
-    private TableColumn<RowTableName, String> columnAbout;
+    private TableColumn<LexemeHash, String> columnAbout;
 
     @FXML
     private Button buttonAnalysis;
 
     @FXML
-    private TableView<RowTableName> tableDoWhile;
+    private TableView<LexemeHash> tableDoWhile;
 
     @FXML
-    private TableColumn<RowTableName, String> columnNumber1;
+    private TableColumn<LexemeHash, String> columnId1;
 
     @FXML
-    private TableColumn<RowTableName, String> columnId1;
-
-    @FXML
-    private TableColumn<RowTableName, String> columnAbout1;
+    private TableColumn<LexemeHash, String> columnAbout1;
 
     @FXML
     private Button buttonAnalysisDoWhile;
@@ -60,15 +54,16 @@ public class PrimaryController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        columnNumber.setCellValueFactory(cellData ->
-                new SimpleStringProperty(String.valueOf(cellData.getValue().getNumber()))
-        );
-        columnId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
+        //cellData - это объект RowTableName из коллекции.
+        //new SimpleStringProperty(cellData.getValue().getId()) - печатает id в этой колонке
+
+        columnId.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStringElement()));
         columnAbout.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAbout()));
-        columnNumber1.setCellValueFactory(cellData ->
-                new SimpleStringProperty(String.valueOf(cellData.getValue().getNumber()))
-        );
-        columnId1.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
+
+
+
+
+        columnId1.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStringElement()));
         columnAbout1.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAbout()));
 
 
@@ -85,7 +80,7 @@ public class PrimaryController implements Initializable {
                 LexisResult lexisResult = null;
                 lexisResult = Lexis.analysisExpression(textBoxInput.getText());
                 textBoxLexemes.setText(lexisResult.getLexemesString());
-                table.setItems(FXCollections.observableList(lexisResult.getTableNames()));
+                table.setItems(FXCollections.observableList(lexisResult.getHashTableAsList()));
             } catch (MatcherCompileException matcherCompileException) {
                 matcherCompileException.printStackTrace();
                 textBoxLexemes.setText(matcherCompileException.getMessage());
@@ -98,7 +93,7 @@ public class PrimaryController implements Initializable {
             try {
                 LexisResult lexisResult = Lexis.analysisDoWhile(textAreaInputDoWhile.getText());
                 textAreaLexemesDoWhile.setText(lexisResult.getLexemesString());
-                tableDoWhile.setItems(FXCollections.observableList(lexisResult.getTableNames()));
+                tableDoWhile.setItems(FXCollections.observableList(lexisResult.getHashTableAsList()));
             } catch (MatcherCompileException matcherCompileException) {
                 matcherCompileException.printStackTrace();
                 textAreaLexemesDoWhile.setText(matcherCompileException.getMessage());

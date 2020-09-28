@@ -1,10 +1,10 @@
 package org.pshiblo.compiler.lexis;
 
+import org.pshiblo.compiler.hash.Hashable;
+
 import java.io.IOException;
 
 public class Lexeme {
-
-    private int pointer;
 
     private final boolean isVal;
 
@@ -34,14 +34,6 @@ public class Lexeme {
         return new Lexeme(lexeme, false, false, true);
     }
 
-    public void setPointer(int pointer) {
-        this.pointer = pointer;
-    }
-
-    public int getPointer() {
-        return pointer;
-    }
-
     public String getLexeme() {
         return lexeme;
     }
@@ -60,6 +52,6 @@ public class Lexeme {
 
     @Override
     public String toString() {
-        return String.valueOf(pointer) + " : " + lexeme;
+        return "< " + lexeme + " >";
     }
 }

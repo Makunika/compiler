@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane prefHeight="688.0" prefWidth="983.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pshiblo.UI.controllers.PrimaryController">
    <center>
       <TabPane>
@@ -25,7 +24,6 @@
                         <TextField fx:id="textBoxLexemes" editable="false" layoutX="212.0" layoutY="137.0" prefHeight="25.0" prefWidth="497.0" />
                         <TableView fx:id="table" layoutX="14.0" layoutY="185.0" prefHeight="333.0" prefWidth="743.0">
                           <columns>
-                            <TableColumn fx:id="columnNumber" prefWidth="75.0" text="Номер" />
                             <TableColumn fx:id="columnId" prefWidth="269.0" text="Идентификатор" />
                               <TableColumn fx:id="columnAbout" minWidth="0.0" prefWidth="222.0" text="Описание" />
                           </columns>
@@ -54,7 +52,6 @@
                      <children>
                         <TableView fx:id="tableDoWhile" layoutX="14.0" layoutY="304.0" prefHeight="333.0" prefWidth="499.0">
                            <columns>
-                              <TableColumn fx:id="columnNumber1" prefWidth="75.0" text="Номер" />
                               <TableColumn fx:id="columnId1" prefWidth="269.0" text="Идентификатор" />
                               <TableColumn fx:id="columnAbout1" minWidth="0.0" prefWidth="222.0" text="Описание" />
                            </columns>

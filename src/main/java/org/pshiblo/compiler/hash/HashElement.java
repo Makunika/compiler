@@ -5,9 +5,9 @@ public class HashElement<T extends Hashable> {
     private final T element;
     private HashElement<T> nextElement;
 
-    public HashElement(T element, HashElement<T> nextElement) {
+    public HashElement(T element) {
         this.element = element;
-        this.nextElement = nextElement;
+        this.nextElement = null;
     }
 
     public T getElement() {

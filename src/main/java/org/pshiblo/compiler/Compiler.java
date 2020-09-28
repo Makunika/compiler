@@ -17,7 +17,6 @@ public class Compiler {
 //        } catch (MatcherCompileException e) {
 //            e.printStackTrace();
 //        }
-        System.out.println(HashTable.hash("1"));
 
     }
 }
