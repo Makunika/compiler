@@ -9,20 +9,13 @@ public class LexisResult {
 
     private final HashTable<LexemeHash> hashTable;
     private static int size = 50;
-    private final List<Lexeme> lexemes;
-    private int count;
+    private final List<LexemeString> lexemes;
     private LexemeHash lastVal;
     private LexemeHash prev;
 
     public LexisResult() {
         this.lexemes = new ArrayList<>();
-        count = 0;
-        hashTable = new HashTable<>(50);
-    }
-
-    public LexisResult(LexisResult lexisResult) {
-        this();
-        count = lexisResult.count;
+        hashTable = new HashTable<>(size);
     }
 
     public void addNextLexeme(Lexeme lexeme, About about) {
@@ -31,7 +24,7 @@ public class LexisResult {
             lastVal = prev;
         }
         prev = hashTable.addElement(new LexemeHash(lexeme, about.getVal()));
-        lexemes.add(lexeme);
+        lexemes.add(lexeme.toLexemeString());
 
 //        Lexeme findLexeme = lexemes.stream()
 //                .filter(lexeme1 -> lexeme1.getLexeme().equals(lexeme.getLexeme()))
@@ -56,17 +49,10 @@ public class LexisResult {
         return hashTable.toList();
     }
 
-    public List<Lexeme> getLexemes() {
+    public List<LexemeString> getLexemes() {
         return lexemes;
     }
 
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
 
     public void changeLastValue(About about) {
         lastVal.setAbout(about.getVal());
@@ -74,13 +60,18 @@ public class LexisResult {
 
     public String getLexemesString() {
         StringBuilder sb = new StringBuilder();
-        for (Lexeme lexeme : lexemes) {
-                if (lexeme.isSign()) {
-                    sb.append(lexeme.getLexeme());
-                } else {
-                    sb.append("<lex ").append(lexeme.getLexeme()).append(">");
-                }
+        for (LexemeString lexeme : lexemes) {
+            sb.append(lexeme.getLexeme());
         }
+
+
+//        for (Lexeme lexeme : lexemes) {
+//                if (lexeme.isSign()) {
+//                    sb.append(lexeme.getLexeme());
+//                } else {
+//                    sb.append("<lex ").append(lexeme.getLexeme()).append(">");
+//                }
+//        }
         return sb.toString();
     }
 }

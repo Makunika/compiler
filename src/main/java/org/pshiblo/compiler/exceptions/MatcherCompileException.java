@@ -1,4 +1,4 @@
-package org.pshiblo.compiler.lexis.Exceptions;
+package org.pshiblo.compiler.exceptions;
 
 public class MatcherCompileException extends Exception {
     public MatcherCompileException(String line) {

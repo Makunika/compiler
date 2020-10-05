@@ -54,4 +54,8 @@ public class Lexeme {
     public String toString() {
         return "< " + lexeme + " >";
     }
+
+    public LexemeString toLexemeString() {
+        return new LexemeString(lexeme);
+    }
 }

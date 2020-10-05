@@ -1,10 +1,5 @@
 package org.pshiblo.compiler;
 
-import org.pshiblo.compiler.hash.HashTable;
-import org.pshiblo.compiler.lexis.Exceptions.MatcherCompileException;
-import org.pshiblo.compiler.lexis.Lexis;
-import org.pshiblo.compiler.lexis.LexisResult;
-
 public class Compiler {
 
     public static void main(String[] args) {

@@ -9,10 +9,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import org.pshiblo.compiler.lexis.Exceptions.MatcherCompileException;
+import org.pshiblo.compiler.exceptions.MatcherCompileException;
 import org.pshiblo.compiler.lexis.Lexis;
 import org.pshiblo.compiler.lexis.LexisResult;
 import org.pshiblo.compiler.lexis.LexemeHash;
+
+import static org.pshiblo.compiler.syntax.Syntax.syntaxAnalysisDoWhile;
 
 public class PrimaryController implements Initializable {
 
@@ -94,9 +96,10 @@ public class PrimaryController implements Initializable {
                 LexisResult lexisResult = Lexis.analysisDoWhile(textAreaInputDoWhile.getText());
                 textAreaLexemesDoWhile.setText(lexisResult.getLexemesString());
                 tableDoWhile.setItems(FXCollections.observableList(lexisResult.getHashTableAsList()));
-            } catch (MatcherCompileException matcherCompileException) {
-                matcherCompileException.printStackTrace();
-                textAreaLexemesDoWhile.setText(matcherCompileException.getMessage());
+                syntaxAnalysisDoWhile(lexisResult);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                textAreaLexemesDoWhile.setText(ex.getMessage());
             }
         }
     }

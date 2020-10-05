@@ -1,9 +1,7 @@
 package org.pshiblo.compiler.lexis;
 
-import org.pshiblo.compiler.lexis.Exceptions.MatcherCompileException;
+import org.pshiblo.compiler.exceptions.MatcherCompileException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,13 +31,14 @@ public class Lexis {
 
         Pattern pattern = Pattern.compile("(\\w+)(;|(=)((.)+))");
         Matcher matcher = pattern.matcher(input);
-        if (matcher.find()) {
+        if (matcher.matches()) {
+            System.out.println(matcher.group(0));
             lexisResult.addNextLexeme(Lexeme.val(matcher.group(1)), About.INT);
             if (matcher.group(2).equals(";")) {
                 lexisResult.addNextLexeme(Lexeme.sign(matcher.group(2)), About.OPERATOR);
             } else {
                 lexisResult.addNextLexeme(Lexeme.sign(matcher.group(3)),  About.OPERATOR);
-                Pattern p = Pattern.compile("(\\w+\\.?\\d*)|([+\\-*/^])|[()]|;");
+                Pattern p = Pattern.compile("(\\w+\\.?\\d*)|([+\\-*/^])|[()]|;|=");
                 Matcher m = p.matcher(matcher.group(4));
                 while (m.find())
                 {
@@ -51,6 +50,8 @@ public class Lexis {
                             lexisResult.addNextLexeme(Lexeme.sign(str), About.BRACKET);
                         } else if (str.equals(";")) {
                             lexisResult.addNextLexeme(Lexeme.sign(str), About.END_OPERATOR);
+                        } else if (str.equals("=")) {
+                            lexisResult.addNextLexeme(Lexeme.sign(str), About.OPERATOR);
                         } else {
                             throw new MatcherCompileException(str);
                         }
@@ -69,7 +70,7 @@ public class Lexis {
 
         Pattern booleanPattern = Pattern.compile("(\\w+)(<=|>=|==|>|<|!=)(\\w+)");
         Matcher booleanMatcher = booleanPattern.matcher(input);
-        if (booleanMatcher.find()) {
+        if (booleanMatcher.matches()) {
             String a = booleanMatcher.group(1);
             String sign = booleanMatcher.group(2);
             String b = booleanMatcher.group(3);
@@ -131,8 +132,13 @@ public class Lexis {
             lexisResult.addNextLexeme(Lexeme.sign(doWhileMatcher.group(2)), About.BRACKET_REGION);
 
             String[] expressions = doWhileMatcher.group(3).split(";");
-            for (String expression : expressions) {
-                lexisResult = analysisExpression(expression + ";", lexisResult);
+            for (int i = 0; i < expressions.length; i++) {
+                if (i != expressions.length - 1
+                        || String.valueOf(doWhileMatcher.group(3).toCharArray()[doWhileMatcher.group(3).length() - 1]).equals(";")) {
+                    lexisResult = analysisExpression(expressions[i] + ";", lexisResult);
+                } else {
+                    lexisResult = analysisExpression(expressions[i], lexisResult);
+                }
             }
             lexisResult.addNextLexeme(Lexeme.sign(doWhileMatcher.group(4)), About.BRACKET_REGION);
             lexisResult.addNextLexeme(Lexeme.sign(doWhileMatcher.group(5)), About.WHILE);
