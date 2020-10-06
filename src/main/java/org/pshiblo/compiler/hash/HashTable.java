@@ -76,8 +76,6 @@ public class HashTable<T extends Hashable> {
                     hashElement = hashElement.getNextElement();
                 } while (hashElement != null);
             }
-
-
         }
         return list;
     }

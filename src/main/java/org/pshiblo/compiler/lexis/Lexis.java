@@ -35,9 +35,9 @@ public class Lexis {
             System.out.println(matcher.group(0));
             lexisResult.addNextLexeme(Lexeme.val(matcher.group(1)), About.INT);
             if (matcher.group(2).equals(";")) {
-                lexisResult.addNextLexeme(Lexeme.sign(matcher.group(2)), About.OPERATOR);
+                lexisResult.addNextLexeme(Lexeme.sign(matcher.group(2)), About.END_OPERATOR);
             } else {
-                lexisResult.addNextLexeme(Lexeme.sign(matcher.group(3)),  About.OPERATOR);
+                lexisResult.addNextLexeme(Lexeme.operator(matcher.group(3)),  About.OPERATOR);
                 Pattern p = Pattern.compile("(\\w+\\.?\\d*)|([+\\-*/^])|[()]|;|=");
                 Matcher m = p.matcher(matcher.group(4));
                 while (m.find())
@@ -45,13 +45,13 @@ public class Lexis {
                     String str = m.group();
                     if (!analysisNumberOrVal(str,lexisResult, true)) {
                         if (str.matches("[+\\-*/^]")) {
-                            lexisResult.addNextLexeme(Lexeme.sign(str), About.OPERATOR);
+                            lexisResult.addNextLexeme(Lexeme.operator(str), About.OPERATOR);
                         } else if (str.matches("[()]")) {
                             lexisResult.addNextLexeme(Lexeme.sign(str), About.BRACKET);
                         } else if (str.equals(";")) {
                             lexisResult.addNextLexeme(Lexeme.sign(str), About.END_OPERATOR);
                         } else if (str.equals("=")) {
-                            lexisResult.addNextLexeme(Lexeme.sign(str), About.OPERATOR);
+                            lexisResult.addNextLexeme(Lexeme.operator(str), About.OPERATOR);
                         } else {
                             throw new MatcherCompileException(str);
                         }

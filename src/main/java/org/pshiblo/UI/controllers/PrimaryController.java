@@ -13,8 +13,8 @@ import org.pshiblo.compiler.exceptions.MatcherCompileException;
 import org.pshiblo.compiler.lexis.Lexis;
 import org.pshiblo.compiler.lexis.LexisResult;
 import org.pshiblo.compiler.lexis.LexemeHash;
+import org.pshiblo.compiler.syntax.Syntax;
 
-import static org.pshiblo.compiler.syntax.Syntax.syntaxAnalysisDoWhile;
 
 public class PrimaryController implements Initializable {
 
@@ -96,7 +96,8 @@ public class PrimaryController implements Initializable {
                 LexisResult lexisResult = Lexis.analysisDoWhile(textAreaInputDoWhile.getText());
                 textAreaLexemesDoWhile.setText(lexisResult.getLexemesString());
                 tableDoWhile.setItems(FXCollections.observableList(lexisResult.getHashTableAsList()));
-                syntaxAnalysisDoWhile(lexisResult);
+                Syntax syntax = new Syntax(lexisResult);
+                syntax.syntaxAnalysisDoWhile();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 textAreaLexemesDoWhile.setText(ex.getMessage());
