@@ -1,10 +1,6 @@
 package org.pshiblo.compiler.syntax;
 
 import org.pshiblo.compiler.lexis.Lexeme;
-import org.pshiblo.compiler.syntax.Expression;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CodeBlock {
     private Tree tree;
