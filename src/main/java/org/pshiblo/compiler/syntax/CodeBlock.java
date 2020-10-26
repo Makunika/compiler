@@ -1,47 +1,53 @@
 package org.pshiblo.compiler.syntax;
 
 import org.pshiblo.compiler.lexis.Lexeme;
+import org.pshiblo.compiler.syntax.Expression;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CodeBlock {
-    private List<Expression> expressions;
+    private Tree tree;
+    private Lexeme lexeme;
 
+    public boolean isLexeme() {
+        return lexeme == null && tree != null;
+    }
+
+    public boolean isTree() {
+        return !isLexeme();
+    }
 
     public CodeBlock() {
-        expressions = new ArrayList<>();
     }
 
-    public CodeBlock(List<Expression> expressions) {
-        this.expressions = expressions;
+    public CodeBlock(Tree tree) {
+        this.tree = tree;
     }
 
-    public List<Expression> getExpressions() {
-        return expressions;
+    public CodeBlock(Lexeme lexeme) {
+        this.lexeme = lexeme;
     }
 
-    public void setExpressions(List<Expression> expressions) {
-        this.expressions = expressions;
+    public Tree getTree() {
+        return tree;
     }
 
-    public Expression getLast() {
-        return expressions.get(expressions.size() - 1);
+    public void setTree(Tree tree) {
+        if (lexeme != null) {
+            lexeme = null;
+        }
+        this.tree = tree;
     }
 
-    public Expression get(int index) {
-        return expressions.get(index);
+    public Lexeme getLexeme() {
+        return lexeme;
     }
 
-    public Expression getFirst() {
-        return expressions.get(0);
-    }
-
-    public void add(Expression expression) {
-        expressions.add(expression);
-    }
-
-    public void addNewExpression() {
-        expressions.add(new Expression());
+    public void setLexeme(Lexeme lexeme) {
+        if (tree != null) {
+            tree = null;
+        }
+        this.lexeme = lexeme;
     }
 }

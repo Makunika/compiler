@@ -1,16 +1,11 @@
 package org.pshiblo.compiler.syntax;
 
-import org.pshiblo.compiler.exceptions.MatcherCompileException;
 import org.pshiblo.compiler.exceptions.SyntaxException;
 import org.pshiblo.compiler.lexis.Lexeme;
 import org.pshiblo.compiler.lexis.LexisResult;
-import org.pshiblo.compiler.syntax.tree.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Syntax {
 
@@ -20,107 +15,124 @@ public class Syntax {
         this.lexisResult = lexisResult;
     }
 
-    public void syntaxAnalysisDoWhile() throws SyntaxException {
+    public SyntaxOutput syntaxAnalysisDoWhile() throws SyntaxException {
+        //Только для одного do{...}while
         //{}
-        Tree<CodeBlock> rootTree = new Tree<>();
+        SyntaxOutput syntaxOutput = new SyntaxOutput();
 
-        CodeBlock codeBlockExpr = new CodeBlock();
-        CodeBlock codeBlockDo = new CodeBlock();
-        CodeBlock codeBlockWhile = new CodeBlock();
+        List<Lexeme> whileBefore = new ArrayList<>();
+        List<Lexeme> expressionsBlock = new ArrayList<>();
+        List<Lexeme> whileAfter = new ArrayList<>();
+        CodeBlock booleanBlock = null;
         boolean go = false;
-        int i = -1;
         //do{.....}while
         List<Lexeme> lexemes = lexisResult.getLexemes();
-        for (int j = 0; j < lexemes.size(); j++) {
-            Lexeme lexeme = lexemes.get(j);
+        for (int i = 0; i < lexemes.size(); i++) {
+            Lexeme lexeme = lexemes.get(i);
             if (go && lexeme.getLexeme().equals("}")) {
                 go = false;
-                codeBlockWhile = analysisBoolean(lexemes.subList(j + 1, lexemes.size() - 1));
-                rootTree.setRootValue(codeBlockExpr);
-                rootTree.insertLeft(codeBlockDo);
-                rootTree.insertRight(codeBlockWhile);
+                whileAfter.add(lexeme);
+                whileAfter.add(lexemes.get(i+1));
+                booleanBlock = analysisBoolean(lexemes.subList(i + 3, lexemes.size() - 1));
                 break;
             }
             if (go) {
-                codeBlockExpr.get(i).add(lexeme);
+                expressionsBlock.add(lexeme);
             }
             if (lexeme.getLexeme().equals("{")) {
                 go = true;
-                i++;
-                codeBlockExpr.addNewExpression();
-                codeBlockDo.getExpressions().add(new Expression());
-                for (int k = 0; k < j; k++) {
-                    codeBlockDo.getFirst().add(lexeme);
+                for (int k = 0; k <= i; k++) {
+                    whileBefore.add(lexemes.get(k));
                 }
             }
         }
 
+
+        whileBefore.forEach(lexeme -> {
+            syntaxOutput.getCodeBlocks().add(new CodeBlock(lexeme));
+        });
+
+
         //n=x+a; in {....}
-        i = 0;
-        for (Expression expression : codeBlockExpr.getExpressions()) {
-            List<List<Lexeme>> expressions = new ArrayList<>();
-            expressions.add(new ArrayList<>());
-            for (Lexeme lexeme : doWhile) {
-               expressions.get(i).add(lexeme);
-                if (lexeme.getLexeme().equals(";")) {
-                   expressions.add(new ArrayList<>());
-                   i++;
-               }
+        List<List<Lexeme>> expressions = new ArrayList<>();
+        expressions.add(new ArrayList<>());
+        for (Lexeme lexeme : expressionsBlock) {
+            if (lexeme.getLexeme().equals(";")) {
+                expressions.add(new ArrayList<>());
+                continue;
             }
-            for (List<Lexeme> expression : expressions) {
-                if (expression.size() != 0)
-                    syntaxAnalysisExpression(expression);
-            }
+            expressions.get(expressions.size() - 1).add(lexeme);
         }
+        for (List<Lexeme> expression : expressions) {
+            if (expression.size() != 0)
+                syntaxOutput.getCodeBlocks().add(new CodeBlock(syntaxAnalysisExpression(expression)));
+        }
+
+        whileAfter.forEach(lexeme -> {
+            syntaxOutput.getCodeBlocks().add(new CodeBlock(lexeme));
+        });
+
+        if (booleanBlock != null) {
+            syntaxOutput.getCodeBlocks().add(booleanBlock);
+        }
+        return syntaxOutput;
     }
 
-    private void syntaxAnalysisExpression(List<Lexeme> lexemes) throws SyntaxException {
+    private Tree syntaxAnalysisExpression(List<Lexeme> expression) throws SyntaxException {
         int scob = 0;
-        for (int i = 0; i < lexemes.size(); i++) {
-            if (lexemes.get(i).isOperator()) {
-                if (i == 0 || i == lexemes.size() - 1) {
-                    throw new SyntaxException(lexemes.get(i).getLexeme(), lexemesToString(lexemes));
-                } else if (i == 1 && lexemes.get(i).getLexeme().equals(";")) {
-                    if (lexemes.size() != 2)
-                        throw new SyntaxException(lexemes.get(i).getLexeme(), lexemesToString(lexemes));
-                } else {
-                    if (lexemes.get(i).getLexeme().equals("=")){
-                        if (leftIsOperator(lexemes, i))
-                            throw new SyntaxException(lexemes.get(i).getLexeme(), lexemesToString(lexemes));
-                    }
-                    if (lexemes.get(i).isOperator()) {
-                        if (!lexemes.get(i-1).isVal() && !lexemes.get(i-1).isNumber())
-                            throw new SyntaxException(lexemes.get(i-1).getLexeme() + lexemes.get(i).getLexeme(),
-                                    lexemesToString(lexemes));
-                        if (!lexemes.get(i+1).isVal() && !lexemes.get(i+1).isNumber())
-                            throw new SyntaxException(lexemes.get(i).getLexeme() + lexemes.get(i+1).getLexeme(),
-                                    lexemesToString(lexemes));
-                    }
-                    else if (lexemes.get(i).getLexeme().equals("(")) {
-                        scob++;
-                    }
-                    else if (lexemes.get(i).getLexeme().equals(")")) {
-                        scob--;
-                    }
-                    else if (lexemes.get(i).isNumber() || lexemes.get(i).isVal()) {
-                        if (!lexemes.get(i-1).isOperator())
-                            throw new SyntaxException(lexemes.get(i-1).getLexeme() + lexemes.get(i).getLexeme(),
-                                    lexemesToString(lexemes));
-                        if (!lexemes.get(i+1).isOperator())
-                            throw new SyntaxException(lexemes.get(i).getLexeme() + lexemes.get(i+1).getLexeme(),
-                                    lexemesToString(lexemes));
-                    }
+        for (int i = 0; i < expression.size(); i++) {
+            Lexeme lexeme = expression.get(i);
+            if (lexeme.isOperator()) {
+                if (i == 0 || i == expression.size() - 1) {
+                    throw new SyntaxException(expression.get(i).getLexeme(), lexemesToString(expression));
+                }
+            }
+            if (i == 1 && expression.get(i).getLexeme().equals(";")) {
+                if (expression.size() != 2)
+                    throw new SyntaxException(expression.get(i).getLexeme(), lexemesToString(expression));
+            } else if (i > 0) {
+                if (lexeme.getLexeme().equals("=")){
+                    if (leftIsOperator(expression, i))
+                        throw new SyntaxException(expression.get(i).getLexeme(), lexemesToString(expression));
+                }
+                if (lexeme.isOperator()) {
+                    if (!expression.get(i-1).isVal() && !expression.get(i-1).isNumber() && !expression.get(i-1).getLexeme().equals(")"))
+                        throw new SyntaxException(expression.get(i-1).getLexeme() + lexeme.getLexeme(),
+                                lexemesToString(expression));
+                    if (i >= expression.size() - 1 || (!expression.get(i+1).isVal()
+                            && !expression.get(i+1).isNumber() && !expression.get(i+1).getLexeme().equals("(")))
+                        throw new SyntaxException(expression.get(i).getLexeme() + expression.get(i+1).getLexeme(),
+                                lexemesToString(expression));
+                }
+                else if (lexeme.getLexeme().equals("(")) {
+                    scob++;
+                }
+                else if (lexeme.getLexeme().equals(")")) {
+                    scob--;
+                }
+                else if (lexeme.isNumber() || lexeme.isVal()) {
+                    if (!expression.get(i-1).isOperator() && !expression.get(i-1).getLexeme().equals("("))
+                        throw new SyntaxException(expression.get(i-1).getLexeme() + expression.get(i).getLexeme(),
+                                lexemesToString(expression));
+                    if (i < expression.size() - 1)
+                        if (!expression.get(i+1).isOperator() && !expression.get(i+1).getLexeme().equals(")"))
+                            throw new SyntaxException(expression.get(i).getLexeme() + expression.get(i+1).getLexeme(),
+                                    lexemesToString(expression));
                 }
             }
         }
 
         if (scob != 0) {
-            throw new SyntaxException("()",  lexemesToString(lexemes));
+            throw new SyntaxException("()",  lexemesToString(expression));
         }
+
+        return new Tree().getTreeForExp(expression);
+
     }
 
-    private CodeBlock analysisBoolean(List<Lexeme> lexemes) {
 
+    private CodeBlock analysisBoolean(List<Lexeme> lexemes) {
+        return new CodeBlock(new Tree().getTreeForExp(lexemes));
     }
 
     private String lexemesToString(List<Lexeme> lexemes) {
