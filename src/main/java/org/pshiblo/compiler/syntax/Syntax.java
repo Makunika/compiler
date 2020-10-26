@@ -4,9 +4,11 @@ import org.pshiblo.compiler.exceptions.MatcherCompileException;
 import org.pshiblo.compiler.exceptions.SyntaxException;
 import org.pshiblo.compiler.lexis.Lexeme;
 import org.pshiblo.compiler.lexis.LexisResult;
+import org.pshiblo.compiler.syntax.tree.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,27 +21,43 @@ public class Syntax {
     }
 
     public void syntaxAnalysisDoWhile() throws SyntaxException {
-        List<List<Lexeme>> doWhiles = new ArrayList<>();
+        //{}
+        Tree<CodeBlock> rootTree = new Tree<>();
+
+        CodeBlock codeBlockExpr = new CodeBlock();
+        CodeBlock codeBlockDo = new CodeBlock();
+        CodeBlock codeBlockWhile = new CodeBlock();
         boolean go = false;
         int i = -1;
         //do{.....}while
-        for (Lexeme lexeme : lexisResult.getLexemes()) {
+        List<Lexeme> lexemes = lexisResult.getLexemes();
+        for (int j = 0; j < lexemes.size(); j++) {
+            Lexeme lexeme = lexemes.get(j);
             if (go && lexeme.getLexeme().equals("}")) {
                 go = false;
+                codeBlockWhile = analysisBoolean(lexemes.subList(j + 1, lexemes.size() - 1));
+                rootTree.setRootValue(codeBlockExpr);
+                rootTree.insertLeft(codeBlockDo);
+                rootTree.insertRight(codeBlockWhile);
+                break;
             }
             if (go) {
-                doWhiles.get(i).add(lexeme);
+                codeBlockExpr.get(i).add(lexeme);
             }
             if (lexeme.getLexeme().equals("{")) {
                 go = true;
                 i++;
-                doWhiles.add(new ArrayList<>());
+                codeBlockExpr.addNewExpression();
+                codeBlockDo.getExpressions().add(new Expression());
+                for (int k = 0; k < j; k++) {
+                    codeBlockDo.getFirst().add(lexeme);
+                }
             }
         }
 
         //n=x+a; in {....}
         i = 0;
-        for (List<Lexeme> doWhile : doWhiles) {
+        for (Expression expression : codeBlockExpr.getExpressions()) {
             List<List<Lexeme>> expressions = new ArrayList<>();
             expressions.add(new ArrayList<>());
             for (Lexeme lexeme : doWhile) {
@@ -56,14 +74,7 @@ public class Syntax {
         }
     }
 
-    public void syntaxAnalysisExpression() throws SyntaxException {
-    }
-
-
     private void syntaxAnalysisExpression(List<Lexeme> lexemes) throws SyntaxException {
-        System.out.println("123");
-
-
         int scob = 0;
         for (int i = 0; i < lexemes.size(); i++) {
             if (lexemes.get(i).isOperator()) {
@@ -106,6 +117,10 @@ public class Syntax {
         if (scob != 0) {
             throw new SyntaxException("()",  lexemesToString(lexemes));
         }
+    }
+
+    private CodeBlock analysisBoolean(List<Lexeme> lexemes) {
+
     }
 
     private String lexemesToString(List<Lexeme> lexemes) {
