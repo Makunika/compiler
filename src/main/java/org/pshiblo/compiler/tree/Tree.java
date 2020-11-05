@@ -1,6 +1,8 @@
-package org.pshiblo.compiler.syntax;
+package org.pshiblo.compiler.tree;
 
+import org.pshiblo.compiler.hash.HashTable;
 import org.pshiblo.compiler.lexis.Lexeme;
+import org.pshiblo.compiler.lexis.LexemeHash;
 
 import java.util.List;
 
@@ -8,11 +10,13 @@ public class Tree {
 
     private Node root;
     private Node current;
+    private int l;
 
 
     public Tree() {
         root = new Node();
         current = root;
+        l = 0;
     }
 
     public void insertLeft(Lexeme value) {
@@ -137,6 +141,39 @@ public class Tree {
         } else {
             return 1 + currentPriority;
         }
+    }
+
+    public String getStringForCodeGenerator(int l) {
+        this.l = ++l;
+        return getCodeGen(root);
+    }
+
+    private String getCodeGen(Node current) {
+        if (current == null) return  "";
+
+        if (current.getValue().isVal() || current.getValue().isNumber()) {
+            return current.getValue().getLexeme() + ";";
+        }
+
+        if (current.getValue().isOperator() && !current.getValue().getLexeme().equals("=")) {
+            int i = l++;
+            return switch (current.getValue().getLexeme()) {
+                case "+" -> getCodeGen(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGen(current.getLeft()) + " ADD $" + i + ";";
+                case "*" -> getCodeGen(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGen(current.getLeft()) + " MPY $" + i + ";";
+                case "-" -> getCodeGen(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGen(current.getLeft()) + " SUB $" + i + ";";
+                case "/" -> getCodeGen(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGen(current.getLeft()) + " DIV $" + i + ";";
+                default -> throw new IllegalStateException("Unexpected value: " + current.getValue().getLexeme());
+            };
+        }
+        else if (current.getValue().isOperator()) {
+            return "LOAD " + getCodeGen(current.getRight()) + " STORE " + getCodeGen(current.getLeft());
+        }
+        return "";
+    }
+
+
+    public int getL() {
+        return l;
     }
 }
 

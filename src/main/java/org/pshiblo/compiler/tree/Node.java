@@ -1,4 +1,4 @@
-package org.pshiblo.compiler.syntax;
+package org.pshiblo.compiler.tree;
 
 import org.pshiblo.compiler.lexis.Lexeme;
 
@@ -46,5 +46,9 @@ public class Node {
 
     public void setParent(Node parent) {
         this.parent = parent;
+    }
+
+    public boolean isNullableChild() {
+        return left == null || right == null;
     }
 }

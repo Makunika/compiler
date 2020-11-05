@@ -1,17 +1,18 @@
 package org.pshiblo.compiler.syntax;
 
 import org.pshiblo.compiler.lexis.Lexeme;
+import org.pshiblo.compiler.tree.Tree;
 
 public class CodeBlock {
     private Tree tree;
     private Lexeme lexeme;
 
     public boolean isLexeme() {
-        return lexeme == null && tree != null;
+        return lexeme != null && tree == null;
     }
 
     public boolean isTree() {
-        return !isLexeme();
+        return tree != null && lexeme == null;
     }
 
     public CodeBlock() {
