@@ -47,4 +47,16 @@ public class CodeBlock {
         }
         this.lexeme = lexeme;
     }
+
+    @Override
+    public String toString() {
+        if (isTree())
+            return "CodeBlock{" +
+                "tree=" + tree.getRoot().getValue().getLexeme() +
+                '}';
+        else
+            return "CodeBlock{" +
+                    "lexeme=" + lexeme.getLexeme() +
+                    '}';
+    }
 }

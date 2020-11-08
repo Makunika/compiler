@@ -17,9 +17,9 @@ public class CodeGenerator {
         l = 0;
     }
 
-    public CodeGeneratorOutput generateCode() {
+    public CodeGeneratorOutput generateCodeDoWhile() {
         CodeGeneratorOutput codeGeneratorOutput = new CodeGeneratorOutput();
-
+        codeGeneratorOutput.getOperatorsAssembler().add("loop:");
         for (CodeBlock codeBlock : syntaxOutput.getCodeBlocks()) {
             if (codeBlock.isTree()) {
                 codeGeneratorOutput.getOperatorsAssembler().addAll(generateCodeExpression(codeBlock.getTree()));

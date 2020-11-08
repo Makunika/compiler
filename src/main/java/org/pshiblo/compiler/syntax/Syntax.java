@@ -127,13 +127,17 @@ public class Syntax {
             throw new SyntaxException("()",  lexemesToString(expression));
         }
 
-        return new Tree().getTreeForExp(expression);
+        Tree tree = new Tree().getTreeForExp(expression);
+        tree.setCmp(false);
+        return tree;
 
     }
 
 
     private CodeBlock analysisBoolean(List<Lexeme> lexemes) {
-        return new CodeBlock(new Tree().getTreeForExp(lexemes));
+        Tree tree = new Tree().getTreeForExp(lexemes);
+        tree.setCmp(true);
+        return new CodeBlock(tree);
     }
 
     private String lexemesToString(List<Lexeme> lexemes) {

@@ -96,12 +96,12 @@ public class PrimaryController implements Initializable {
         if (!textAreaInputDoWhile.getText().isBlank()) {
             try {
                 LexisResult lexisResult = Lexis.analysisDoWhile(textAreaInputDoWhile.getText());
-                textAreaLexemesDoWhile.setText(lexisResult.getLexemesString());
+                //textAreaLexemesDoWhile.setText(lexisResult.getLexemesString());
                 tableDoWhile.setItems(FXCollections.observableList(lexisResult.getHashTableAsList()));
                 Syntax syntax = new Syntax(lexisResult);
                 SyntaxOutput syntaxOutput = syntax.syntaxAnalysisDoWhile();
                 CodeGenerator codeGenerator = new CodeGenerator(syntaxOutput);
-                codeGenerator.generateCode();
+                textAreaLexemesDoWhile.setText(codeGenerator.generateCodeDoWhile().toString());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 textAreaLexemesDoWhile.setText(ex.getMessage());

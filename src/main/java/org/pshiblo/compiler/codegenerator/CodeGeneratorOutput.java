@@ -13,4 +13,11 @@ public class CodeGeneratorOutput {
     public List<String> getOperatorsAssembler() {
         return operatorsAssembler;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        operatorsAssembler.forEach(op -> sb.append(op).append("\n"));
+        return sb.toString();
+    }
 }

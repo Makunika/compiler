@@ -1,8 +1,6 @@
 package org.pshiblo.compiler.tree;
 
-import org.pshiblo.compiler.hash.HashTable;
 import org.pshiblo.compiler.lexis.Lexeme;
-import org.pshiblo.compiler.lexis.LexemeHash;
 
 import java.util.List;
 
@@ -10,6 +8,7 @@ public class Tree {
 
     private Node root;
     private Node current;
+    private boolean cmp;
     private int l;
 
 
@@ -17,6 +16,7 @@ public class Tree {
         root = new Node();
         current = root;
         l = 0;
+        cmp = false;
     }
 
     public void insertLeft(Lexeme value) {
@@ -145,10 +145,30 @@ public class Tree {
 
     public String getStringForCodeGenerator(int l) {
         this.l = ++l;
-        return getCodeGen(root);
+        return isCmp() ? getCodeGenCmp(root) : getCodeGenExpr(root);
     }
 
-    private String getCodeGen(Node current) {
+    private String getCodeGenCmp(Node current) {
+        if (current == null) return "";
+        if (current.getValue().isVal() || current.getValue().isNumber()) {
+            return current.getValue().getLexeme();
+        }
+        if (current.getValue().isOperator() || current.getValue().isSign()) {
+            String cmpStr = "CMP " + getCodeGenCmp(current.getLeft()) + ", " + getCodeGenCmp(current.getRight()) + ";";
+            return switch (current.getValue().getLexeme()) {
+                case ">=" -> cmpStr + " JGE loop;";
+                case "<=" -> cmpStr + " JLE loop;";
+                case ">" -> cmpStr + " JG loop;";
+                case "<" -> cmpStr + " JL loop;";
+                case "==" -> cmpStr + " JE loop;";
+                case "!=" -> cmpStr + " JNE loop;";
+                default -> throw new IllegalStateException("Unexpected value: " + current.getValue().getLexeme());
+            };
+        }
+        return null;
+    }
+
+    private String getCodeGenExpr(Node current) {
         if (current == null) return  "";
 
         if (current.getValue().isVal() || current.getValue().isNumber()) {
@@ -158,15 +178,15 @@ public class Tree {
         if (current.getValue().isOperator() && !current.getValue().getLexeme().equals("=")) {
             int i = l++;
             return switch (current.getValue().getLexeme()) {
-                case "+" -> getCodeGen(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGen(current.getLeft()) + " ADD $" + i + ";";
-                case "*" -> getCodeGen(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGen(current.getLeft()) + " MPY $" + i + ";";
-                case "-" -> getCodeGen(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGen(current.getLeft()) + " SUB $" + i + ";";
-                case "/" -> getCodeGen(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGen(current.getLeft()) + " DIV $" + i + ";";
+                case "+" -> getCodeGenExpr(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGenExpr(current.getLeft()) + " ADD $" + i + ";";
+                case "*" -> getCodeGenExpr(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGenExpr(current.getLeft()) + " MPY $" + i + ";";
+                case "-" -> getCodeGenExpr(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGenExpr(current.getLeft()) + " SUB $" + i + ";";
+                case "/" -> getCodeGenExpr(current.getRight()) + " STORE $" + i + "; LOAD " + getCodeGenExpr(current.getLeft()) + " DIV $" + i + ";";
                 default -> throw new IllegalStateException("Unexpected value: " + current.getValue().getLexeme());
             };
         }
         else if (current.getValue().isOperator()) {
-            return "LOAD " + getCodeGen(current.getRight()) + " STORE " + getCodeGen(current.getLeft());
+            return "LOAD " + getCodeGenExpr(current.getRight()) + " STORE " + getCodeGenExpr(current.getLeft());
         }
         return "";
     }
@@ -174,6 +194,14 @@ public class Tree {
 
     public int getL() {
         return l;
+    }
+
+    public boolean isCmp() {
+        return cmp;
+    }
+
+    public void setCmp(boolean cmp) {
+        this.cmp = cmp;
     }
 }
 

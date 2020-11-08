@@ -38,13 +38,13 @@ public class Lexis {
                 lexisResult.addNextLexeme(Lexeme.sign(matcher.group(2)), About.END_OPERATOR);
             } else {
                 lexisResult.addNextLexeme(Lexeme.operator(matcher.group(3)),  About.OPERATOR);
-                Pattern p = Pattern.compile("(\\w+\\.?\\d*)|([+\\-*/^])|[()]|;|=");
+                Pattern p = Pattern.compile("(\\w+\\.?\\d*)|([+\\-*/])|[()]|;|=");
                 Matcher m = p.matcher(matcher.group(4));
                 while (m.find())
                 {
                     String str = m.group();
                     if (!analysisNumberOrVal(str,lexisResult, true)) {
-                        if (str.matches("[+\\-*/^]")) {
+                        if (str.matches("[+\\-*/]")) {
                             lexisResult.addNextLexeme(Lexeme.operator(str), About.OPERATOR);
                         } else if (str.matches("[()]")) {
                             lexisResult.addNextLexeme(Lexeme.sign(str), About.BRACKET);
