@@ -72,7 +72,7 @@ public class CodeOptimization {
                         && currentCommand.equalsArg(nextCommand)) {
                     String arg = nextCommand.getArg();
                     boolean deleted = false;
-                    for (int j = i + 1; j < codeCommands.size(); j++) {
+                    for (int j = i + 2; j < codeCommands.size(); j++) {
                         if (codeCommands.get(j).containArg(arg)) {
                             if (codeCommands.get(j).getCmd().equals("STORE")) {
                                 deleted = true;
