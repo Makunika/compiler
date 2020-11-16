@@ -154,7 +154,7 @@ public class Tree {
             return current.getValue().getLexeme();
         }
         if (current.getValue().isOperator() || current.getValue().isSign()) {
-            String cmpStr = "CMP " + getCodeGenCmp(current.getLeft()) + ", " + getCodeGenCmp(current.getRight()) + ";";
+            String cmpStr = "CMP " + getCodeGenCmp(current.getLeft()) + "," + getCodeGenCmp(current.getRight()) + ";";
             return switch (current.getValue().getLexeme()) {
                 case ">=" -> cmpStr + " JGE loop;";
                 case "<=" -> cmpStr + " JLE loop;";

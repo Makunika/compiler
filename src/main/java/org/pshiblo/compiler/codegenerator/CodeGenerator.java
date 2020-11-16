@@ -19,26 +19,26 @@ public class CodeGenerator {
 
     public CodeGeneratorOutput generateCodeDoWhile() {
         CodeGeneratorOutput codeGeneratorOutput = new CodeGeneratorOutput();
-        codeGeneratorOutput.getOperatorsAssembler().add("loop:");
+        CodeCommand loop = new CodeCommand();
+        loop.setArg("loop");
+        loop.setMark(true);
+        codeGeneratorOutput.getOperatorsAssembler().add(loop);
         for (CodeBlock codeBlock : syntaxOutput.getCodeBlocks()) {
             if (codeBlock.isTree()) {
                 codeGeneratorOutput.getOperatorsAssembler().addAll(generateCodeExpression(codeBlock.getTree()));
             }
         }
-
-
-
         return codeGeneratorOutput;
     }
 
 
-    private List<String> generateCodeExpression(Tree tree) {
+    private List<CodeCommand> generateCodeExpression(Tree tree) {
         String code = tree.getStringForCodeGenerator(l + 1);
         l = tree.getL();
-        List<String> assCode = new LinkedList<>();
+        List<CodeCommand> assCode = new LinkedList<>();
         for (String s : code.split(";")) {
-            s = s + ";";
-            assCode.add(s);
+            String[] cmdAndArg = s.trim().split(" ");
+            assCode.add(new CodeCommand(cmdAndArg[0], cmdAndArg[1]));
         }
         return assCode;
     }
