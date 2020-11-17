@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.pshiblo.compiler.codegenerator.CodeGenerator;
+import org.pshiblo.compiler.codegenerator.CodeGeneratorOutput;
+import org.pshiblo.compiler.codegenerator.CodeOptimization;
 import org.pshiblo.compiler.exceptions.MatcherCompileException;
 import org.pshiblo.compiler.lexis.Lexis;
 import org.pshiblo.compiler.lexis.LexisResult;
@@ -54,7 +56,10 @@ public class PrimaryController implements Initializable {
     private TextArea textAreaInputDoWhile;
 
     @FXML
-    private TextArea textAreaLexemesDoWhile;
+    private TextArea textAreaAfterOptimization;
+
+    @FXML
+    private TextArea textAreaBeforeOptimization;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -101,10 +106,15 @@ public class PrimaryController implements Initializable {
                 Syntax syntax = new Syntax(lexisResult);
                 SyntaxOutput syntaxOutput = syntax.syntaxAnalysisDoWhile();
                 CodeGenerator codeGenerator = new CodeGenerator(syntaxOutput);
-                textAreaLexemesDoWhile.setText(codeGenerator.generateCodeDoWhile().toString());
+                CodeGeneratorOutput codeGeneratorOutput = codeGenerator.generateCodeDoWhile();
+                textAreaBeforeOptimization.setText(codeGeneratorOutput.toString());
+                CodeOptimization codeOptimization = new CodeOptimization(codeGeneratorOutput);
+                String s = codeOptimization.optimization().toString();
+                textAreaAfterOptimization.setText(s);
+
             } catch (Exception ex) {
                 ex.printStackTrace();
-                textAreaLexemesDoWhile.setText(ex.getMessage());
+                textAreaAfterOptimization.setText(ex.getMessage());
             }
         }
     }

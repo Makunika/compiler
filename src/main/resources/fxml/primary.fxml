@@ -64,9 +64,20 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <Button fx:id="buttonAnalysisDoWhile" layoutX="531.0" layoutY="41.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="110.0" text="Начать" />
-                        <TextArea fx:id="textAreaInputDoWhile" layoutX="57.0" layoutY="37.0" prefHeight="240.0" prefWidth="455.0" text="do&#10;{&#10;n=5*6+7-(a-5);&#10;a=g+s;&#10;} while(a &gt;= b)&#10;" wrapText="true" />
-                        <TextArea fx:id="textAreaLexemesDoWhile" editable="false" layoutX="527.0" layoutY="304.0" prefHeight="333.0" prefWidth="441.0" wrapText="true" />
+                        <Button fx:id="buttonAnalysisDoWhile" layoutX="57.0" layoutY="246.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="110.0" text="Начать" />
+                        <TextArea fx:id="textAreaInputDoWhile" layoutX="57.0" layoutY="37.0" prefHeight="195.0" prefWidth="455.0" text="do&#10;{&#10;n=5*6+7-(a-5);&#10;a=g+s;&#10;} while(a &gt;= b)&#10;" wrapText="true" />
+                        <TextArea fx:id="textAreaAfterOptimization" editable="false" layoutX="527.0" layoutY="353.0" prefHeight="284.0" prefWidth="441.0" wrapText="true" />
+                        <TextArea fx:id="textAreaBeforeOptimization" editable="false" layoutX="527.0" layoutY="38.0" prefHeight="262.0" prefWidth="441.0" wrapText="true" />
+                        <Label layoutX="527.0" layoutY="14.0" text="До оптимизации">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="527.0" layoutY="321.0" text="После оптимизации">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
                      </children>
                   </AnchorPane>
               </content>
